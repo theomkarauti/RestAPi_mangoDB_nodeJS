@@ -1,0 +1,100 @@
+const express = require('express')
+const fs = require("fs")
+const app = express()
+const router = express.Router();
+const PORT =200
+const dbinfo= require("db")
+//dataBases
+//var MongoClient = require('mongodb').MongoClient;
+
+//var url = "mongodb+srv://oauti:admin@cluster0.8upapsv.mongodb.net/test";
+
+var bodyParser = require('body-parser')
+app.use(bodyParser.json())
+
+
+var MongoClient=dbconn.MongoClient
+
+const udata=[
+
+    {
+            name:"test1"
+    },
+    {
+            name:"test2"
+    }
+]
+
+app.get('/',(req,res)=>{
+
+console.log('root user called!')
+
+
+
+
+MongoClient.connect(uri, function(err, db) {  
+    if (err) throw err;   
+    
+   var cursor = db.db("test").collection("inventory").find();
+
+    cursor.each(function(err, doc) {
+
+        console.log(doc);
+
+
+    });
+
+      //db.close();  
+
+    db.close();  
+
+    });  
+      
+
+res.write(JSON.stringify(udata))
+res.end()
+
+})
+
+
+app.post('/addData',(req,res)=>{
+
+    var userData = { name: "Ajeet Kumar", age: "28", address: "Delhi" }; 
+
+    MongoClient.connect(uri, function(err, db) {  
+        if (err) throw err;   
+        
+            
+    var dbo = db.db("test").collection("inventory");
+     
+        dbo.insertOne(userData, function(err, res) {  
+        if (err) throw err; 
+    
+        console.log(" record inserted");
+    
+    
+          //db.close();  
+    
+        db.close();  
+    
+        });  
+        });  
+    
+
+
+    const uname=req.body
+    udata.push(uname)
+    console.log(uname)
+    res.send('<h1>Post called</h1>')
+
+})
+
+
+
+
+app.listen(PORT,()=>{
+
+    console.log('PORT Listen ',PORT)
+})
+
+module.exports = router;
